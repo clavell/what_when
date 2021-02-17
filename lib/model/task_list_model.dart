@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'TaskModel.dart';
@@ -22,7 +23,11 @@ class TaskListModel extends ChangeNotifier {
   UnmodifiableListView<TaskModel> get getTaskList =>
       UnmodifiableListView(_tasks);
 
-  UnmodifiableListView<TaskModel> getSubtasksFor(int id) {
+  UnmodifiableListView<TaskModel> getSubtasksFor(int? id) {
+    if (id == null) {
+      return getTaskList;
+    }
+
     List<TaskModel> subtasks = [];
 
     for (TaskModel task in _tasks) {
@@ -32,5 +37,13 @@ class TaskListModel extends ChangeNotifier {
     }
 
     return UnmodifiableListView(subtasks);
+  }
+
+  TaskModel getTaskById(int? id) {
+    if (id == null) {
+      return TaskModel(0, 'Tasks', null, null);
+    }
+
+    return _tasks[id];
   }
 }
