@@ -11,7 +11,7 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  int mainTask = 1;
+  int mainTask = 3;
 
   @override
   Widget build(BuildContext context) {

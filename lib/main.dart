@@ -1,7 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:what_when/model/task_list_model.dart';
-import 'package:what_when/screen/task_list.dart';
+import 'package:what_when/screen/task_list_screen.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -18,13 +18,13 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
       // home: MyHomePage(title: 'Flutter Demo Home Page'),
-      home: TaskList(),
+      home: TaskListScreen(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
