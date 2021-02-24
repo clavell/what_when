@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:what_when/model/TaskModel.dart';
 import 'package:what_when/model/task_list_model.dart';
 
-class TaskList extends StatefulWidget {
+class TaskListScreen extends StatefulWidget {
   @override
-  _TaskListState createState() => _TaskListState();
+  _TaskListScreenState createState() => _TaskListScreenState();
 }
 
-class _TaskListState extends State<TaskList> {
+class _TaskListScreenState extends State<TaskListScreen> {
   int mainTask = 1;
 
   @override
