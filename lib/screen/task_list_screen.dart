@@ -1,6 +1,8 @@
 import 'dart:collection';
 
+import 'package:what_when/widgets/list_item_card.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:what_when/model/TaskModel.dart';
 import 'package:what_when/model/task_list_model.dart';
@@ -20,29 +22,63 @@ class _TaskListScreenState extends State<TaskListScreen> {
         UnmodifiableListView<TaskModel> subtasks =
             tasks.getSubtasksFor(mainTask);
         return Scaffold(
-          body: ListView.builder(
-            itemBuilder: (context, index) {
-              return Card(
-                child: ListTile(
-                  onTap: () {},
-                  onLongPress: () {
-                    setState(() {
-                      mainTask = subtasks[index].id;
-                    });
-                  },
-                  title: Text('${subtasks[index].title}'),
-                  leading: Checkbox(
-                    onChanged: (newValue) {},
-                    value: false,
-                  ),
-                ),
-              );
-            },
-            itemCount: tasks.getSubtasksFor(mainTask).length,
-            // separatorBuilder: (context, index) {
-            //   return Divider();
-            // },
+          appBar: AppBar(
+            centerTitle: false,
+            title: Text('Lists',
+                style: GoogleFonts.solway(
+                    fontSize: 25, fontWeight: FontWeight.w900)),
           ),
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: ListView(
+              children: subtasks
+                  .map((e) => GestureDetector(
+                        onLongPress: () {
+                          setState(() {
+                            mainTask = e.id;
+                          });
+                        },
+                        child: ListItemCard(
+                          task: e,
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+          // body: ListView.builder(
+          //   itemBuilder: (context, index) {
+          //     return Card(
+          //       child: ListTile(
+          //         tileColor: Color(0xFF22292E),
+          //         minVerticalPadding: 30,
+          //         onTap: () {},
+          //         onLongPress: () {
+          //           setState(() {
+          //             mainTask = subtasks[index].id;
+          //           });
+          //         },
+          //         title: Center(
+          //           child: Text(
+          //             '${subtasks[index].title}',
+          //             style: TextStyle(
+          //               fontSize: 20,
+          //               color: Colors.white,
+          //             ),
+          //           ),
+          //         ),
+          //
+          //         // leading: Checkbox(
+          //         //   onChanged: (newValue) {},
+          //         //   value: false,
+          //         // ),
+          //       ),
+          //     );
+          //   },
+          //   itemCount: tasks.getSubtasksFor(mainTask).length,
+          //   // separatorBuilder: (context, index) {
+          //   //   return Divider();
+          //   // },
+          // ),
         );
         // return Center(
         //   child: Text("Number of tasks: ${tasks.getListLength}"),
