@@ -28,8 +28,13 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-        textTheme: GoogleFonts.solwayTextTheme(
-          Theme.of(context).textTheme,
+        textTheme: GoogleFonts.montserratAlternatesTextTheme(
+          Theme.of(context).textTheme.copyWith(
+                bodyText1: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(color: Colors.white, fontSize: 16),
+              ),
         ),
       ),
 

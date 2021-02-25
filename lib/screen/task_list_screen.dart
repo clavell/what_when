@@ -19,19 +19,25 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Widget build(BuildContext context) {
     return Consumer<TaskListModel>(
       builder: (context, tasks, child) {
-        UnmodifiableListView<TaskModel> subtasks =
+        UnmodifiableListView<TaskModel> subTasks =
             tasks.getSubtasksFor(mainTask);
         return Scaffold(
+          persistentFooterButtons: [],
           appBar: AppBar(
             centerTitle: false,
-            title: Text('Lists',
-                style: GoogleFonts.solway(
-                    fontSize: 25, fontWeight: FontWeight.w900)),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text('Lists',
+                  style: GoogleFonts.sanchez(
+                      letterSpacing: 1,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700)),
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: ListView(
-              children: subtasks
+              children: subTasks
                   .map((e) => GestureDetector(
                         onLongPress: () {
                           setState(() {
@@ -45,40 +51,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   .toList(),
             ),
           ),
-          // body: ListView.builder(
-          //   itemBuilder: (context, index) {
-          //     return Card(
-          //       child: ListTile(
-          //         tileColor: Color(0xFF22292E),
-          //         minVerticalPadding: 30,
-          //         onTap: () {},
-          //         onLongPress: () {
-          //           setState(() {
-          //             mainTask = subtasks[index].id;
-          //           });
-          //         },
-          //         title: Center(
-          //           child: Text(
-          //             '${subtasks[index].title}',
-          //             style: TextStyle(
-          //               fontSize: 20,
-          //               color: Colors.white,
-          //             ),
-          //           ),
-          //         ),
-          //
-          //         // leading: Checkbox(
-          //         //   onChanged: (newValue) {},
-          //         //   value: false,
-          //         // ),
-          //       ),
-          //     );
-          //   },
-          //   itemCount: tasks.getSubtasksFor(mainTask).length,
-          //   // separatorBuilder: (context, index) {
-          //   //   return Divider();
-          //   // },
-          // ),
         );
         // return Center(
         //   child: Text("Number of tasks: ${tasks.getListLength}"),
