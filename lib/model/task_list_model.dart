@@ -83,10 +83,6 @@ class TaskListModel extends ChangeNotifier {
       UnmodifiableListView(_tasks);
 
   UnmodifiableListView<TaskModel> getSubtasksFor(int id) {
-    if (id == null) {
-      return getTaskList;
-    }
-
     List<TaskModel> subtasks = [];
 
     for (TaskModel task in _tasks) {
