@@ -8,20 +8,22 @@ import 'package:what_when/model/TaskModel.dart';
 import 'package:what_when/model/task_list_model.dart';
 
 class TaskListScreen extends StatefulWidget {
+  int mainTask;
+
+  TaskListScreen({this.mainTask});
+
   @override
   _TaskListScreenState createState() => _TaskListScreenState();
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  int mainTask;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskListModel>(
       builder: (context, tasks, child) {
         UnmodifiableListView<TaskModel> subTasks =
-            tasks.getSubtasksFor(mainTask);
-        TaskModel task = tasks.getTaskById(mainTask);
+            tasks.getSubtasksFor(widget.mainTask);
+        TaskModel task = tasks.getTaskById(widget.mainTask);
 
         return Scaffold(
           persistentFooterButtons: [],
@@ -42,9 +44,14 @@ class _TaskListScreenState extends State<TaskListScreen> {
               children: subTasks
                   .map((e) => GestureDetector(
                         onLongPress: () {
-                          setState(() {
-                            mainTask = e.id;
-                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      TaskListScreen(mainTask: e.id)));
+                          // setState(() {
+                          //   mainTask = e.id;
+                          // });
                         },
                         child: ListItemCard(
                           task: e,
