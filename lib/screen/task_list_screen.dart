@@ -13,7 +13,7 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  int mainTask = 3;
+  int mainTask;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +21,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
       builder: (context, tasks, child) {
         UnmodifiableListView<TaskModel> subTasks =
             tasks.getSubtasksFor(mainTask);
+        TaskModel task = tasks.getTaskById(mainTask);
+
         return Scaffold(
           persistentFooterButtons: [],
           appBar: AppBar(
             centerTitle: false,
             title: Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text('Lists',
+              child: Text(task.title ?? 'Lists',
                   style: GoogleFonts.sanchez(
                       letterSpacing: 1,
                       fontSize: 25,
