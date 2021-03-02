@@ -114,6 +114,6 @@ class TaskListModel extends ChangeNotifier {
           .first;
     }
 
-    return _tasks[id];
+    return _tasks.firstWhere((task) => task.id == id);
   }
 }
