@@ -18,8 +18,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
-        bottomSheetTheme:
-            BottomSheetThemeData(backgroundColor: Color(0xFF22292E)),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Color(0xFF22292E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+            ),
+          ),
+        ),
         scaffoldBackgroundColor: Colors.black,
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.black,

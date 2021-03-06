@@ -24,21 +24,16 @@ class ListItemCard extends StatelessWidget {
           color: Color(0xFF22292E),
         ),
         child: ListTile(
-          leading: leading,
+          leading: leading ?? SizedBox(),
           // trailing: ,
-          title: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Center(
-              child: Text(title, style: Theme.of(context).textTheme.bodyText1
-                  // style: TextStyle(
-                  //   letterSpacing: 0.5,
-                  //   fontWeight: FontWeight.w100,
-                  //   fontSize: 20,
-                  //   color: Colors.white,
-                  // ),
-                  ),
-            ),
-          ),
+          title: Text(title, style: Theme.of(context).textTheme.bodyText1
+              // style: TextStyle(
+              //   letterSpacing: 0.5,
+              //   fontWeight: FontWeight.w100,
+              //   fontSize: 20,
+              //   color: Colors.white,
+              // ),
+              ),
         ),
       ),
     );

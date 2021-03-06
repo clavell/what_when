@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:what_when/model/TaskModel.dart';
 import 'package:what_when/model/task_list_model.dart';
+import 'package:what_when/screen/add_task_screen.dart';
 
 class TaskListScreen extends StatefulWidget {
   int mainTask;
@@ -40,7 +41,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: ListView(children: buildTaskList(subTasks, context)),
+            child: ListView(
+                children: buildTaskList(subTasks, context, widget.mainTask)),
           ),
         );
         // return Center(
@@ -49,8 +51,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  List<GestureDetector> buildTaskList(
-      UnmodifiableListView<TaskModel> subTasks, BuildContext context) {
+  List<GestureDetector> buildTaskList(UnmodifiableListView<TaskModel> subTasks,
+      BuildContext context, int parentid) {
     List<GestureDetector> subtasklist = subTasks
         .map((e) => GestureDetector(
               onLongPress: () {
@@ -73,37 +75,17 @@ class _TaskListScreenState extends State<TaskListScreen> {
               showModalBottomSheet<void>(
                 context: context,
                 builder: (BuildContext context) {
-                  return Container(
-                    height: 200,
-                    // color: Colors.amber,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Text('Modal BottomSheet'),
-                          ElevatedButton(
-                            child: const Text('Close BottomSheet'),
-                            onPressed: () => Navigator.pop(context),
-                          )
-                        ],
-                      ),
-                    ),
+                  return AddTaskBottomSheet(
+                    parentid: parentid,
                   );
                 },
               );
             },
             child: ListItemCard(
               title: 'Add Task',
+              leading: Icon(Icons.add),
             ),
           )
         ];
-  }
-}
-
-class addTaskButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
