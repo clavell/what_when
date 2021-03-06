@@ -82,6 +82,8 @@ class TaskListModel extends ChangeNotifier {
   UnmodifiableListView<TaskModel> get getTaskList =>
       UnmodifiableListView(_tasks);
 
+  get getLastId => _tasks.last.id;
+
   UnmodifiableListView<TaskModel> getSubtasksFor(int id) {
     List<TaskModel> subtasks = [];
 
@@ -116,5 +118,6 @@ class TaskListModel extends ChangeNotifier {
   addTask(Map<String, dynamic> taskData) {
     _tasks.add(
         standardSerializers.deserializeWith(TaskModel.serializer, taskData));
+    notifyListeners();
   }
 }
