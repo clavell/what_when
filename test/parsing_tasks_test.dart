@@ -26,4 +26,9 @@ main() {
 
     expect(taskListModel.getTaskList.last == taskModel, true);
   });
+
+  test('get the id of last task', () {
+    TaskListModel taskListModel = TaskListModel();
+    expect(taskListModel.getLastId == 10, true);
+  });
 }
