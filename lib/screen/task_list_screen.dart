@@ -40,30 +40,70 @@ class _TaskListScreenState extends State<TaskListScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: ListView(
-              children: subTasks
-                  .map((e) => GestureDetector(
-                        onLongPress: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      TaskListScreen(mainTask: e.id)));
-                          // setState(() {
-                          //   mainTask = e.id;
-                          // });
-                        },
-                        child: ListItemCard(
-                          task: e,
-                        ),
-                      ))
-                  .toList(),
-            ),
+            child: ListView(children: buildTaskList(subTasks, context)),
           ),
         );
         // return Center(
         //   child: Text("Number of tasks: ${tasks.getListLength}"),
       },
     );
+  }
+
+  List<GestureDetector> buildTaskList(
+      UnmodifiableListView<TaskModel> subTasks, BuildContext context) {
+    List<GestureDetector> subtasklist = subTasks
+        .map((e) => GestureDetector(
+              onLongPress: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TaskListScreen(mainTask: e.id)));
+                // });
+              },
+              child: ListItemCard(
+                title: e.title,
+              ),
+            ))
+        .toList();
+
+    return subtasklist +
+        [
+          GestureDetector(
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    height: 200,
+                    // color: Colors.amber,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Text('Modal BottomSheet'),
+                          ElevatedButton(
+                            child: const Text('Close BottomSheet'),
+                            onPressed: () => Navigator.pop(context),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: ListItemCard(
+              title: 'Add Task',
+            ),
+          )
+        ];
+  }
+}
+
+class addTaskButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
