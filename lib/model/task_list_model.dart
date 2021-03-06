@@ -5,7 +5,7 @@ import 'package:what_when/model/serializers.dart';
 import 'package:what_when/model/TaskModel.dart';
 
 class TaskListModel extends ChangeNotifier {
-  final List<TaskModel> _tasks = [
+  List<TaskModel> _tasks = [
     {
       'id': 1,
       'parent': null,
@@ -111,5 +111,10 @@ class TaskListModel extends ChangeNotifier {
     }
 
     return _tasks.firstWhere((task) => task.id == id);
+  }
+
+  addTask(Map<String, dynamic> taskData) {
+    _tasks.add(
+        standardSerializers.deserializeWith(TaskModel.serializer, taskData));
   }
 }
