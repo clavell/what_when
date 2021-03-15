@@ -20,6 +20,8 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.10.0-0 <3.0.0"
 dependencies:
+  path: ^1.8.0
+  sembast: ^3.0.0+4
   font_awesome_flutter: ^8.11.0
   built_collection: ^5.0.0
   built_value: ^8.0.0
