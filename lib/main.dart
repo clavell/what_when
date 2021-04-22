@@ -12,11 +12,10 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'What When',
       theme: ThemeData.dark().copyWith(
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: Color(0xFF22292E),
@@ -46,8 +45,6 @@ class MyApp extends StatelessWidget {
               ),
         ),
       ),
-
-      // home: MyHomePage(title: 'Flutter Demo Home Page'),
       home: TaskListScreen(),
     );
   }
