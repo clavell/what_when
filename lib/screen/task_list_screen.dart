@@ -20,6 +20,8 @@ class TaskListScreen extends StatefulWidget {
 class _TaskListScreenState extends State<TaskListScreen> {
   @override
   Widget build(BuildContext context) {
+    Provider.of<TaskListModel>(context, listen: false).getAllTasks();
+
     return Consumer<TaskListModel>(
       builder: (context, tasks, child) {
         UnmodifiableListView<TaskModel> subTasks =
