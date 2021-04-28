@@ -1,3 +1,6 @@
+#dbs
+*.db
+
 # Miscellaneous
 *.class
 *.log
