@@ -33,9 +33,9 @@ class TaskListModel extends ChangeNotifier {
     // bool tasksToChoose;
 
     for (TaskModel task in _tasks) {
-      if (task.complete == null) {
-        task = task.rebuild((b) => b..complete = false);
-      }
+      // if (task.complete == null) {
+      //   task = task.rebuild((b) => b..complete = false);
+      // }
       if (task.parent == id && task.complete == getComplete) {
         subtasks.add(task);
       }
@@ -103,5 +103,18 @@ class TaskListModel extends ChangeNotifier {
     notifyListeners();
 
     return tasks;
+  }
+
+  Future<void> setTaskAsComplete(TaskModel task) async {
+    // _tasks.add(
+    //     standardSerializers.deserializeWith(TaskModel.serializer, taskData));
+    task = task.rebuild((b) => b..complete = true);
+    Map<String, dynamic> taskData =
+        standardSerializers.serializeWith(TaskModel.serializer, task);
+
+    await _taskStore.record(task.id).put(await _db, taskData);
+    await getAllTasks();
+
+    getAllTasks();
   }
 }

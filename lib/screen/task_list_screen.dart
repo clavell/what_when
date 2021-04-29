@@ -26,6 +26,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
       builder: (context, tasks, child) {
         UnmodifiableListView<TaskModel> subTasks =
             tasks.getSubtasksFor(widget.mainTask, false);
+
+        UnmodifiableListView<TaskModel> completedSubTasks =
+            tasks.getSubtasksFor(widget.mainTask, true);
+
         TaskModel task = tasks.getTaskById(widget.mainTask);
 
         return Scaffold(
@@ -44,42 +48,23 @@ class _TaskListScreenState extends State<TaskListScreen> {
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: ListView(
-                children: buildTaskList(subTasks, context, widget.mainTask)),
+                children: buildTaskList(
+                    completedSubTasks, subTasks, context, widget.mainTask)),
           ),
         );
       },
     );
   }
 
-  List<GestureDetector> buildTaskList(UnmodifiableListView<TaskModel> subTasks,
-      BuildContext context, int parentid) {
-    List<GestureDetector> subtasklist = subTasks
-        .map((e) => GestureDetector(
-              onPanUpdate: (details) {
-                if (details.delta.dx > 0) {
-                  print("Dragging in +X direction");
-                  _showDeleteConfirmation(e);
-                } else {
-                  //if (details.delta.dx < 0) {
-                  print("Dragging in -X direction");
-                }
-                if (details.delta.dy > 0)
-                  print("Dragging in +Y direction");
-                else
-                  print("Dragging in -Y direction");
-              },
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TaskListScreen(mainTask: e.id)));
-                // });
-              },
-              child: ListItemCard(
-                title: e.title,
-              ),
-            ))
-        .toList();
+  List<GestureDetector> buildTaskList(
+      UnmodifiableListView<TaskModel> completedSubTasks,
+      UnmodifiableListView<TaskModel> subTasks,
+      BuildContext context,
+      int parentid) {
+    List<GestureDetector> subtasklist =
+        generateSubTasksList(subTasks: subTasks, complete: false);
+    List<GestureDetector> completedSubtasklist =
+        generateSubTasksList(subTasks: completedSubTasks, complete: true);
 
     return subtasklist +
         [
@@ -95,11 +80,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
               );
             },
             child: ListItemCard(
-              title: 'Add Task',
-              leading: Icon(Icons.add),
-            ),
+                title: 'Add Task', leading: Icon(Icons.add), complete: false),
           )
-        ];
+        ] +
+        completedSubtasklist;
   }
 
   void _showDeleteConfirmation(TaskModel activeTask) {
@@ -147,5 +131,38 @@ class _TaskListScreenState extends State<TaskListScreen> {
         );
       },
     );
+  }
+
+  List<GestureDetector> generateSubTasksList(
+      {UnmodifiableListView<TaskModel> subTasks, bool complete}) {
+    return subTasks
+        .map((e) => GestureDetector(
+              onPanUpdate: (details) {
+                if (details.delta.dx > 0) {
+                  print("Dragging in +X direction");
+                  complete ? null : _showDeleteConfirmation(e);
+                } else {
+                  //if (details.delta.dx < 0) {
+                  print("Dragging in -X direction");
+                  complete
+                      ? null
+                      : Provider.of<TaskListModel>(context, listen: false)
+                          .setTaskAsComplete(e);
+                }
+                if (details.delta.dy > 0)
+                  print("Dragging in +Y direction");
+                else
+                  print("Dragging in -Y direction");
+              },
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TaskListScreen(mainTask: e.id)));
+                // });
+              },
+              child: ListItemCard(title: e.title, complete: complete),
+            ))
+        .toList();
   }
 }
