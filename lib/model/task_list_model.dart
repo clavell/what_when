@@ -17,77 +17,6 @@ class TaskListModel extends ChangeNotifier {
   Future<Database> get _db async => await AppDatabase.instance.database;
 
   List<TaskModel> _tasks = [];
-  // List<TaskModel> _tasks = [
-  //   {
-  //     'id': 1,
-  //     'parent': null,
-  //     'prereqs': null,
-  //     'title': 'Task App',
-  //   }, // TaskModel(1, 'Task App', null, null),
-  //   {
-  //     'id': 2,
-  //     'parent': 1,
-  //     'prereqs': [3],
-  //     'title': 'Scheduler',
-  //   }, // TaskModel(2, 'Scheduler', 1, [3]),
-  //
-  //   {
-  //     'id': 3,
-  //     'parent': 1,
-  //     'prereqs': null,
-  //     'title': 'Store Tasks',
-  //   }, // TaskModel(3, 'Store Tasks', 1, null),
-  //   {
-  //     'id': 5,
-  //     'parent': 1,
-  //     'prereqs': [3],
-  //     'title': 'Hierarchy View',
-  //   }, // TaskModel(5, 'Hierarchy View', 1, [3]),
-  //
-  //   {
-  //     'id': 4,
-  //     'parent': 1,
-  //     'prereqs': [3],
-  //     'title': 'Create Tasks',
-  //   }, // TaskModel(4, 'Create Tasks', 1, [3]),
-  //
-  //   {
-  //     'id': 6,
-  //     'parent': 3,
-  //     'prereqs': null,
-  //     'title': 'Create Provider',
-  //   }, // TaskModel(6, 'Create Provider', 3, null),
-  //
-  //   {
-  //     'id': 7,
-  //     'parent': 6,
-  //     'prereqs': null,
-  //     'title': 'Research Provider',
-  //   }, // TaskModel(7, 'Research Provider', 6, null),
-  //
-  //   {
-  //     'id': 8,
-  //     'parent': 3,
-  //     'prereqs': null,
-  //     'title': 'Store the task list',
-  //   }, // TaskModel(8, 'Store the task list', 3, null),
-  //
-  //   {
-  //     'id': 9,
-  //     'parent': 3,
-  //     'prereqs': null,
-  //     'title': 'Create a list view',
-  //   }, // TaskModel(9, 'Create a list view', 3, null),
-  //
-  //   {
-  //     'id': 10,
-  //     'parent': 3,
-  //     'prereqs': null,
-  //     'title': 'Write some unit tests',
-  //   }, // TaskModel(10, 'Write Some Unit Tests', 3, null),
-  // ]
-  //     .map((e) => standardSerializers.deserializeWith(TaskModel.serializer, e))
-  //     .toList();
 
   int get getListLength => _tasks.length;
 
@@ -98,11 +27,16 @@ class TaskListModel extends ChangeNotifier {
     return _tasks.isNotEmpty ? _tasks.last.id : 0;
   }
 
-  UnmodifiableListView<TaskModel> getSubtasksFor(int id) {
+  UnmodifiableListView<TaskModel> getSubtasksFor(int id, bool getComplete) {
     List<TaskModel> subtasks = [];
 
+    // bool tasksToChoose;
+
     for (TaskModel task in _tasks) {
-      if (task.parent == id) {
+      if (task.complete == null) {
+        task = task.rebuild((b) => b..complete = false);
+      }
+      if (task.parent == id && task.complete == getComplete) {
         subtasks.add(task);
       }
     }
@@ -136,6 +70,16 @@ class TaskListModel extends ChangeNotifier {
     await getAllTasks();
 
     getAllTasks();
+  }
+
+  Future<void> deleteTask(int id) async {
+    // Delete this task from the db
+    await _taskStore.record(id).delete(await _db);
+
+    // Refresh tasks list for UI
+    await getAllTasks();
+
+    return;
   }
 
   Future<List<TaskModel>> getAllTasks() async {

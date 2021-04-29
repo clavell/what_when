@@ -45,10 +45,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 int newID = Provider.of<TaskListModel>(context, listen: false)
                         .getLastId +
                     1;
-                setState(() {
-                  Provider.of<TaskListModel>(context, listen: false).addTask(
-                      {'id': newID, 'title': text, 'parent': widget.parentid});
-                });
+                Provider.of<TaskListModel>(context, listen: false).addTask(
+                    {'id': newID, 'title': text, 'parent': widget.parentid});
                 Navigator.pop(context);
               },
             )

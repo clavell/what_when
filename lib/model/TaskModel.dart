@@ -17,6 +17,9 @@ abstract class TaskModel implements Built<TaskModel, TaskModelBuilder> {
 
   String get title;
 
+  @nullable
+  bool get complete;
+
   TaskModel._();
   factory TaskModel([void Function(TaskModelBuilder) updates]) = _$TaskModel;
 }

@@ -25,7 +25,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return Consumer<TaskListModel>(
       builder: (context, tasks, child) {
         UnmodifiableListView<TaskModel> subTasks =
-            tasks.getSubtasksFor(widget.mainTask);
+            tasks.getSubtasksFor(widget.mainTask, false);
         TaskModel task = tasks.getTaskById(widget.mainTask);
 
         return Scaffold(
@@ -47,8 +47,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 children: buildTaskList(subTasks, context, widget.mainTask)),
           ),
         );
-        // return Center(
-        //   child: Text("Number of tasks: ${tasks.getListLength}"),
       },
     );
   }
@@ -57,7 +55,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
       BuildContext context, int parentid) {
     List<GestureDetector> subtasklist = subTasks
         .map((e) => GestureDetector(
-              onLongPress: () {
+              onPanUpdate: (details) {
+                if (details.delta.dx > 0) {
+                  print("Dragging in +X direction");
+                  _showDeleteConfirmation(e);
+                } else {
+                  //if (details.delta.dx < 0) {
+                  print("Dragging in -X direction");
+                }
+                if (details.delta.dy > 0)
+                  print("Dragging in +Y direction");
+                else
+                  print("Dragging in -Y direction");
+              },
+              onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,5 +100,52 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
           )
         ];
+  }
+
+  void _showDeleteConfirmation(TaskModel activeTask) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Are You Sure You want to delete?"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('You are about to delete ${activeTask.title}.'),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  'You cannot undo this action.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                print("Deleting ${activeTask.title}...");
+
+                // call deletion function
+                Provider.of<TaskListModel>(context, listen: false)
+                    .deleteTask(activeTask.id);
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                print("Canceled delete.");
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
