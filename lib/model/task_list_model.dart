@@ -27,15 +27,13 @@ class TaskListModel extends ChangeNotifier {
     return _tasks.isNotEmpty ? _tasks.last.id : 0;
   }
 
+  ///getComplete is telling the function to get tasks that are complete or not
   UnmodifiableListView<TaskModel> getSubtasksFor(int id, bool getComplete) {
     List<TaskModel> subtasks = [];
 
     // bool tasksToChoose;
 
     for (TaskModel task in _tasks) {
-      // if (task.complete == null) {
-      //   task = task.rebuild((b) => b..complete = false);
-      // }
       if (task.parent == id && task.complete == getComplete) {
         subtasks.add(task);
       }
@@ -52,6 +50,7 @@ class TaskListModel extends ChangeNotifier {
           'parent': null,
           'prereqs': null,
           'title': 'Tasks',
+          'complete': false,
         }
       ]
           .map((e) =>
@@ -83,14 +82,7 @@ class TaskListModel extends ChangeNotifier {
   }
 
   Future<List<TaskModel>> getAllTasks() async {
-    // Finder allows for filtering / sorting
-    // final finder = Finder(sortOrders: [SortOrder('name')]);
-
-    // Get the data using our finder for sorting
-    final taskSnapshots = await _taskStore.find(
-      await _db,
-      // finder: finder,
-    );
+    final taskSnapshots = await _taskStore.find(await _db);
 
     List<TaskModel> tasks = taskSnapshots.map((snapshot) {
       final task = standardSerializers.deserializeWith(
@@ -105,10 +97,8 @@ class TaskListModel extends ChangeNotifier {
     return tasks;
   }
 
-  Future<void> setTaskAsComplete(TaskModel task) async {
-    // _tasks.add(
-    //     standardSerializers.deserializeWith(TaskModel.serializer, taskData));
-    task = task.rebuild((b) => b..complete = true);
+  Future<void> toggleTaskComplete(TaskModel task) async {
+    task = task.rebuild((b) => b..complete = !b.complete);
     Map<String, dynamic> taskData =
         standardSerializers.serializeWith(TaskModel.serializer, task);
 

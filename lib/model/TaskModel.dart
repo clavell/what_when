@@ -17,7 +17,6 @@ abstract class TaskModel implements Built<TaskModel, TaskModelBuilder> {
 
   String get title;
 
-  @nullable
   bool get complete;
 
   TaskModel._();

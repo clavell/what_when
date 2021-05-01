@@ -23,6 +23,9 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
       'title',
       serializers.serialize(object.title,
           specifiedType: const FullType(String)),
+      'complete',
+      serializers.serialize(object.complete,
+          specifiedType: const FullType(bool)),
     ];
     Object value;
     value = object.parent;
@@ -38,13 +41,6 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
         ..add(serializers.serialize(value,
             specifiedType:
                 const FullType(BuiltList, const [const FullType(int)])));
-    }
-    value = object.complete;
-    if (value != null) {
-      result
-        ..add('complete')
-        ..add(
-            serializers.serialize(value, specifiedType: const FullType(bool)));
     }
     return result;
   }
@@ -108,6 +104,7 @@ class _$TaskModel extends TaskModel {
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, 'TaskModel', 'id');
     BuiltValueNullFieldError.checkNotNull(title, 'TaskModel', 'title');
+    BuiltValueNullFieldError.checkNotNull(complete, 'TaskModel', 'complete');
   }
 
   @override
@@ -208,7 +205,8 @@ class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
               prereqs: _prereqs?.build(),
               title: BuiltValueNullFieldError.checkNotNull(
                   title, 'TaskModel', 'title'),
-              complete: complete);
+              complete: BuiltValueNullFieldError.checkNotNull(
+                  complete, 'TaskModel', 'complete'));
     } catch (_) {
       String _$failedField;
       try {
