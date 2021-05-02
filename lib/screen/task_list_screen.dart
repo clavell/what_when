@@ -19,17 +19,39 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
+  SlidableController slidableController;
+
+  @protected
+  void initState() {
+    slidableController = SlidableController(
+      onSlideAnimationChanged: (Animation<double> slideAnimation) {
+        setState(() {
+          _fadeAnimation = slideAnimation;
+        });
+        print(_fadeAnimation);
+      },
+      onSlideIsOpenChanged: (bool isOpen) {
+        // Slidable.of(context).close();
+      },
+    );
+    super.initState();
+  }
+
+  Animation<double> _fadeAnimation;
+
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskListModel>(context, listen: false).getAllTasks();
 
     return Consumer<TaskListModel>(
       builder: (context, tasks, child) {
-        UnmodifiableListView<TaskModel> subTasks =
-            tasks.getSubtasksFor(widget.mainTask, false);
-
-        UnmodifiableListView<TaskModel> completedSubTasks =
-            tasks.getSubtasksFor(widget.mainTask, true);
+        UnmodifiableListView<TaskModel> subTasks = tasks.getSubtasksFor(
+          widget.mainTask,
+          // false
+        );
+        //
+        // UnmodifiableListView<TaskModel> completedSubTasks =
+        //     tasks.getSubtasksFor(widget.mainTask, true);
 
         TaskModel task = tasks.getTaskById(widget.mainTask);
 
@@ -58,7 +80,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     });
                   },
                   children: buildTaskList(
-                      completedSubTasks, subTasks, context, widget.mainTask)),
+                      // completedSubTasks,
+                      subTasks,
+                      context,
+                      widget.mainTask)),
             ),
           ),
         );
@@ -67,36 +92,35 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   List<Widget> buildTaskList(
-      UnmodifiableListView<TaskModel> completedSubTasks,
+      // UnmodifiableListView<TaskModel> completedSubTasks,
       UnmodifiableListView<TaskModel> subTasks,
       BuildContext context,
       int parentid) {
-    List<Slidable> subtasklist =
+    List<GestureDetector> subtasklist =
         generateSubTasksList(subTasks: subTasks, complete: false);
-    List<Slidable> completedSubtasklist =
-        generateSubTasksList(subTasks: completedSubTasks, complete: true);
+    // List<Slidable> completedSubtasklist =
+    //     generateSubTasksList(subTasks: completedSubTasks, complete: true);
 
     return subtasklist +
         [
-          Slidable(
-            key: Key('add button'),
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AddTaskBottomSheet(
-                      parentid: parentid,
-                    );
-                  },
-                );
-              },
-              child: ListItemCard(
-                  title: 'Add Task', leading: Icon(Icons.add), complete: false),
-            ),
+          GestureDetector(
+            key: Key('addButton'),
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddTaskBottomSheet(
+                    parentid: parentid,
+                  );
+                },
+              );
+            },
+            child: ListItemCard(
+                title: 'Add Task', leading: Icon(Icons.add), complete: false),
           )
-        ] +
-        completedSubtasklist;
+        ];
+    // +
+    // completedSubtasklist;
   }
 
   void _showDeleteConfirmation(TaskModel activeTask) {
@@ -146,35 +170,29 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  List<Slidable> generateSubTasksList(
+  List<GestureDetector> generateSubTasksList(
       {UnmodifiableListView<TaskModel> subTasks, bool complete}) {
     return subTasks
-        .map((e) => Slidable(
-              key: Key(e.id.toString() + complete.toString()),
-              actionPane: SlidableBehindActionPane(),
-              dismissal: SlidableDismissal(
-                child: SlidableDrawerDismissal(),
-                onDismissed: (actionType) {
-                  Provider.of<TaskListModel>(context, listen: false)
-                      .toggleTaskComplete(e);
-                },
-              ),
-              secondaryActions: [
-                Container(
-                  child: Icon(Icons.check),
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-              ],
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              TaskListScreen(mainTask: e.id)));
-                },
-                child: ListItemCard(title: e.title, complete: complete),
-              ),
+        .map((e) => GestureDetector(
+              key: Key(e.id.toString()),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TaskListScreen(mainTask: e.id)));
+              },
+              child: ListItemCard(
+                  title: e.title,
+                  complete: e.complete,
+                  leading: Checkbox(
+                    // checkColor: , // color of tick Mark
+                    activeColor: Colors.blueGrey,
+                    value: e.complete,
+                    onChanged: (_) {
+                      Provider.of<TaskListModel>(context, listen: false)
+                          .toggleTaskComplete(e);
+                    },
+                  )),
             ))
         .toList();
   }

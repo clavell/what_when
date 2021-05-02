@@ -28,13 +28,18 @@ class TaskListModel extends ChangeNotifier {
   }
 
   ///getComplete is telling the function to get tasks that are complete or not
-  UnmodifiableListView<TaskModel> getSubtasksFor(int id, bool getComplete) {
+  UnmodifiableListView<TaskModel> getSubtasksFor(
+    int id,
+    // bool getComplete
+  ) {
     List<TaskModel> subtasks = [];
 
     // bool tasksToChoose;
 
     for (TaskModel task in _tasks) {
-      if (task.parent == id && task.complete == getComplete) {
+      if (task.parent == id
+          // && task.complete == getComplete
+          ) {
         subtasks.add(task);
       }
     }
