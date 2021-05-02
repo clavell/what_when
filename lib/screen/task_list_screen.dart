@@ -19,26 +19,6 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  SlidableController slidableController;
-
-  @protected
-  void initState() {
-    slidableController = SlidableController(
-      onSlideAnimationChanged: (Animation<double> slideAnimation) {
-        setState(() {
-          _fadeAnimation = slideAnimation;
-        });
-        print(_fadeAnimation);
-      },
-      onSlideIsOpenChanged: (bool isOpen) {
-        // Slidable.of(context).close();
-      },
-    );
-    super.initState();
-  }
-
-  Animation<double> _fadeAnimation;
-
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskListModel>(context, listen: false).getAllTasks();
