@@ -28,4 +28,14 @@ class TaskDAO {
     var task = await _taskStore.record(id).get(await _db);
     return standardSerializers.deserializeWith(TaskModel.serializer, task);
   }
+
+  Future<void> deleteTask(int id) async {
+    // Delete this task from the db
+    await _taskStore.record(id).delete(await _db);
+
+    // Refresh tasks list for UI
+    await getAll();
+
+    return;
+  }
 }
