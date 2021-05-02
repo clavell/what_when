@@ -1,96 +1,45 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:sembast/sembast.dart';
+
+import 'package:what_when/model/app_database.dart';
 import 'package:what_when/model/serializers.dart';
 import 'package:what_when/model/TaskModel.dart';
 
 class TaskListModel extends ChangeNotifier {
-  final List<TaskModel> _tasks = [
-    {
-      'id': 1,
-      'parent': null,
-      'prereqs': null,
-      'title': 'Task App',
-    }, // TaskModel(1, 'Task App', null, null),
-    {
-      'id': 2,
-      'parent': 1,
-      'prereqs': [3],
-      'title': 'Scheduler',
-    }, // TaskModel(2, 'Scheduler', 1, [3]),
+  static const String TASK_STORE_NAME = 'tasks';
+  final _taskStore = intMapStoreFactory.store(TASK_STORE_NAME);
 
-    {
-      'id': 3,
-      'parent': 1,
-      'prereqs': null,
-      'title': 'Store Tasks',
-    }, // TaskModel(3, 'Store Tasks', 1, null),
-    {
-      'id': 5,
-      'parent': 1,
-      'prereqs': [3],
-      'title': 'Hierarchy View',
-    }, // TaskModel(5, 'Hierarchy View', 1, [3]),
+  // Private getter to shorten the amount of code needed to get the
+  // singleton instance of an opened database.
 
-    {
-      'id': 4,
-      'parent': 1,
-      'prereqs': [3],
-      'title': 'Create Tasks',
-    }, // TaskModel(4, 'Create Tasks', 1, [3]),
+  Future<Database> get _db async => await AppDatabase.instance.database;
 
-    {
-      'id': 6,
-      'parent': 3,
-      'prereqs': null,
-      'title': 'Create Provider',
-    }, // TaskModel(6, 'Create Provider', 3, null),
-
-    {
-      'id': 7,
-      'parent': 6,
-      'prereqs': null,
-      'title': 'Research Provider',
-    }, // TaskModel(7, 'Research Provider', 6, null),
-
-    {
-      'id': 8,
-      'parent': 3,
-      'prereqs': null,
-      'title': 'Store the task list',
-    }, // TaskModel(8, 'Store the task list', 3, null),
-
-    {
-      'id': 9,
-      'parent': 3,
-      'prereqs': null,
-      'title': 'Create a list view',
-    }, // TaskModel(9, 'Create a list view', 3, null),
-
-    {
-      'id': 10,
-      'parent': 3,
-      'prereqs': null,
-      'title': 'Write some unit tests',
-    }, // TaskModel(10, 'Write Some Unit Tests', 3, null),
-  ]
-      .map((e) => standardSerializers.deserializeWith(TaskModel.serializer, e))
-      .toList();
+  List<TaskModel> _tasks = [];
 
   int get getListLength => _tasks.length;
 
   UnmodifiableListView<TaskModel> get getTaskList =>
       UnmodifiableListView(_tasks);
 
-  UnmodifiableListView<TaskModel> getSubtasksFor(int id) {
-    if (id == null) {
-      return getTaskList;
-    }
+  get getLastId {
+    return _tasks.isNotEmpty ? _tasks.last.id : 0;
+  }
 
+  ///getComplete is telling the function to get tasks that are complete or not
+  UnmodifiableListView<TaskModel> getSubtasksFor(
+    int id,
+    // bool getComplete
+  ) {
     List<TaskModel> subtasks = [];
 
+    // bool tasksToChoose;
+
     for (TaskModel task in _tasks) {
-      if (task.parent == id) {
+      if (task.parent == id
+          // && task.complete == getComplete
+          ) {
         subtasks.add(task);
       }
     }
@@ -106,6 +55,7 @@ class TaskListModel extends ChangeNotifier {
           'parent': null,
           'prereqs': null,
           'title': 'Tasks',
+          'complete': false,
         }
       ]
           .map((e) =>
@@ -114,6 +64,52 @@ class TaskListModel extends ChangeNotifier {
           .first;
     }
 
-    return _tasks[id];
+    return _tasks.firstWhere((task) => task.id == id);
+  }
+
+  addTask(Map<String, dynamic> taskData) async {
+    // _tasks.add(
+    //     standardSerializers.deserializeWith(TaskModel.serializer, taskData));
+    await _taskStore.record(taskData["id"]).put(await _db, taskData);
+    await getAllTasks();
+
+    getAllTasks();
+  }
+
+  Future<void> deleteTask(int id) async {
+    // Delete this task from the db
+    await _taskStore.record(id).delete(await _db);
+
+    // Refresh tasks list for UI
+    await getAllTasks();
+
+    return;
+  }
+
+  Future<List<TaskModel>> getAllTasks() async {
+    final taskSnapshots = await _taskStore.find(await _db);
+
+    List<TaskModel> tasks = taskSnapshots.map((snapshot) {
+      final task = standardSerializers.deserializeWith(
+          TaskModel.serializer, snapshot.value);
+      return task;
+    }).toList();
+
+    // Update UI
+    _tasks = tasks;
+    notifyListeners();
+
+    return tasks;
+  }
+
+  Future<void> toggleTaskComplete(TaskModel task) async {
+    task = task.rebuild((b) => b..complete = !b.complete);
+    Map<String, dynamic> taskData =
+        standardSerializers.serializeWith(TaskModel.serializer, task);
+
+    await _taskStore.record(task.id).put(await _db, taskData);
+    await getAllTasks();
+
+    getAllTasks();
   }
 }

@@ -23,6 +23,9 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
       'title',
       serializers.serialize(object.title,
           specifiedType: const FullType(String)),
+      'complete',
+      serializers.serialize(object.complete,
+          specifiedType: const FullType(bool)),
     ];
     Object value;
     value = object.parent;
@@ -71,6 +74,10 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
           result.title = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'complete':
+          result.complete = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
       }
     }
 
@@ -87,13 +94,17 @@ class _$TaskModel extends TaskModel {
   final BuiltList<int> prereqs;
   @override
   final String title;
+  @override
+  final bool complete;
 
   factory _$TaskModel([void Function(TaskModelBuilder) updates]) =>
       (new TaskModelBuilder()..update(updates)).build();
 
-  _$TaskModel._({this.id, this.parent, this.prereqs, this.title}) : super._() {
+  _$TaskModel._({this.id, this.parent, this.prereqs, this.title, this.complete})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(id, 'TaskModel', 'id');
     BuiltValueNullFieldError.checkNotNull(title, 'TaskModel', 'title');
+    BuiltValueNullFieldError.checkNotNull(complete, 'TaskModel', 'complete');
   }
 
   @override
@@ -110,14 +121,16 @@ class _$TaskModel extends TaskModel {
         id == other.id &&
         parent == other.parent &&
         prereqs == other.prereqs &&
-        title == other.title;
+        title == other.title &&
+        complete == other.complete;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, id.hashCode), parent.hashCode), prereqs.hashCode),
-        title.hashCode));
+        $jc($jc($jc($jc(0, id.hashCode), parent.hashCode), prereqs.hashCode),
+            title.hashCode),
+        complete.hashCode));
   }
 
   @override
@@ -126,7 +139,8 @@ class _$TaskModel extends TaskModel {
           ..add('id', id)
           ..add('parent', parent)
           ..add('prereqs', prereqs)
-          ..add('title', title))
+          ..add('title', title)
+          ..add('complete', complete))
         .toString();
   }
 }
@@ -150,6 +164,10 @@ class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
   String get title => _$this._title;
   set title(String title) => _$this._title = title;
 
+  bool _complete;
+  bool get complete => _$this._complete;
+  set complete(bool complete) => _$this._complete = complete;
+
   TaskModelBuilder();
 
   TaskModelBuilder get _$this {
@@ -159,6 +177,7 @@ class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
       _parent = $v.parent;
       _prereqs = $v.prereqs?.toBuilder();
       _title = $v.title;
+      _complete = $v.complete;
       _$v = null;
     }
     return this;
@@ -185,7 +204,9 @@ class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
               parent: parent,
               prereqs: _prereqs?.build(),
               title: BuiltValueNullFieldError.checkNotNull(
-                  title, 'TaskModel', 'title'));
+                  title, 'TaskModel', 'title'),
+              complete: BuiltValueNullFieldError.checkNotNull(
+                  complete, 'TaskModel', 'complete'));
     } catch (_) {
       String _$failedField;
       try {
