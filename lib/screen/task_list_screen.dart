@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:what_when/widgets/bouncing_button.dart';
 import 'package:what_when/widgets/list_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,13 +20,14 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
+  UnmodifiableListView<TaskModel> subTasks;
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskListModel>(context, listen: false).getAllTasks();
 
     return Consumer<TaskListModel>(
       builder: (context, tasks, child) {
-        UnmodifiableListView<TaskModel> subTasks = tasks.getSubtasksFor(
+        subTasks = tasks.getSubtasksFor(
           widget.mainTask,
           // false
         );
@@ -38,6 +40,75 @@ class _TaskListScreenState extends State<TaskListScreen> {
         return Scaffold(
           persistentFooterButtons: [],
           appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: BouncingButton(
+                  icon: Icon(
+                    Icons.delete,
+                    size: 30,
+                    color: Colors.red[50],
+                  ),
+                  onPressed: () {
+                    print('there are ${subTasks.length} subtasks');
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Are You Sure?"),
+                          content: SingleChildScrollView(
+                            child: ListBody(
+                              children: <Widget>[
+                                Text('You are about to delete this task.'),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Text(
+                                  'You cannot undo this action.',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('Delete'),
+                              onPressed: () {
+                                print("Deleting ${task.title}...");
+
+                                int taskToDelete = task.id;
+                                // call deletion function
+
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+
+                                Provider.of<TaskListModel>(context,
+                                        listen: false)
+                                    .deleteTask(taskToDelete);
+                                // Pop until we get back to the contact list screen
+                                // Navigator.popUntil(
+                                //     context, ModalRoute.withName(ContactListScreen.screenId));
+                              },
+                            ),
+                            TextButton(
+                              child: Text('Cancel'),
+                              onPressed: () {
+                                print("Canceled delete.");
+                                Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
             centerTitle: false,
             title: Padding(
               padding: const EdgeInsets.only(left: 10.0),
@@ -53,6 +124,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
             child: Theme(
               data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
               child: ReorderableListView(
+                  // header: Text(task.title ?? 'Lists',
+                  //     style: GoogleFonts.sanchez(
+                  //         color: Colors.white,
+                  //         letterSpacing: 1,
+                  //         fontSize: 25,
+                  //         fontWeight: FontWeight.w700)),
                   onReorder: (oldIndex, newIndex) {
                     setState(() {
                       // var replacedWidget = listItems.removeAt(oldIndex);
