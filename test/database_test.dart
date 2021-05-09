@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sembast/sembast.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sembast/sembast_io.dart';
@@ -24,9 +26,9 @@ main() {
     await store.record('settings').put(db, {'offline': true});
 
 // read values
-    var title = await store.record('title').get(db) as String;
-    var version = await store.record('version').get(db) as int;
-    var settings = await store.record('settings').get(db) as Map;
+    var title = await store.record('title').get(db) as String?;
+    var version = await store.record('version').get(db) as int?;
+    var settings = await store.record('settings').get(db) as Map?;
 
 // ...and delete
     await store.record('version').delete(db);
@@ -42,7 +44,7 @@ main() {
 
     Database db = await dbFactory.openDatabase(dbpath);
     var store = StoreRef.main();
-    expect({'offline': true}, await store.record('settings').get(db) as Map);
+    expect({'offline': true}, await store.record('settings').get(db) as Map?);
   });
 
   test('adding something to the database.. adds something to the database',
@@ -50,7 +52,8 @@ main() {
     var store = intMapStoreFactory.store('store');
     var db = await AppDatabase.instance.database;
     await store.record(1).add(db, {'value': 'poutine'});
-    var test = await store.record(1).get(db);
+    var test =
+        await (store.record(1).get(db) as FutureOr<Map<String, Object>?>);
     expect({'value': 'poutine'}, test);
   });
 
@@ -60,7 +63,7 @@ main() {
       ..title = 'wah a krof'
       ..parent = 0);
     await TaskDAO.instance.insert(task);
-    TaskModel retrieved = await TaskDAO.instance.getTaskById(1);
+    TaskModel? retrieved = await TaskDAO.instance.getTaskById(1);
     expect(task, retrieved);
   });
 }

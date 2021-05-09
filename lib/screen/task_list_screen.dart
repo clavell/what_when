@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/services.dart';
@@ -13,7 +14,7 @@ import 'package:what_when/screen/add_task_screen.dart';
 import '../constants.dart';
 
 class TaskListScreen extends StatefulWidget {
-  int mainTask;
+  int? mainTask;
 
   TaskListScreen({this.mainTask});
 
@@ -22,7 +23,7 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  UnmodifiableListView<TaskModel> subTasks;
+  late UnmodifiableListView<TaskModel?> subTasks;
   @override
   Widget build(BuildContext context) {
     //get the list of tasks
@@ -38,7 +39,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
         // UnmodifiableListView<TaskModel> completedSubTasks =
         //     tasks.getSubtasksFor(widget.mainTask, true);
 
-        TaskModel task = tasks.getTaskById(widget.mainTask);
+        TaskModel task = tasks.getTaskById(widget.mainTask)!;
 
         return Scaffold(
           persistentFooterButtons: [],
@@ -155,9 +156,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   List<Widget> buildTaskList(
       // UnmodifiableListView<TaskModel> completedSubTasks,
-      UnmodifiableListView<TaskModel> subTasks,
+      UnmodifiableListView<TaskModel?> subTasks,
       BuildContext context,
-      int parentid) {
+      int? parentid) {
     List<GestureDetector> subtasklist =
         generateSubTasksList(subTasks: subTasks, complete: false);
     // List<Slidable> completedSubtasklist =
@@ -186,15 +187,18 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   List<GestureDetector> generateSubTasksList(
-      {UnmodifiableListView<TaskModel> subTasks, bool complete}) {
+      {required UnmodifiableListView<TaskModel?> subTasks, bool? complete}) {
     return subTasks
         .map((e) => GestureDetector(
-              key: Key(e.id.toString()),
+              key: Key(e!.id.toString()),
               onTap: () async {
-                bool shouldDelete = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TaskListScreen(mainTask: e.id)));
+                bool shouldDelete = await (Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                TaskListScreen(mainTask: e.id)))
+                    // as FutureOr<bool>
+                    );
                 print(shouldDelete);
 
                 if (shouldDelete) {

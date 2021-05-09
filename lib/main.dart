@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme.copyWith(
                 bodyText1: Theme.of(context)
                     .textTheme
-                    .bodyText1
+                    .bodyText1!
                     .copyWith(color: Colors.white, fontSize: 16),
               ),
         ),

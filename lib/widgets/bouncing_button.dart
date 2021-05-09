@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class BouncingButton extends StatefulWidget {
   final onPressed;
-  final Icon icon;
+  final Icon? icon;
 
   BouncingButton({this.onPressed, this.icon});
 
@@ -29,7 +29,7 @@ class _BouncingButtonState extends State<BouncingButton>
   }
 
   double _scale = 1.0;
-  AnimationController _controller;
+  late AnimationController _controller;
   @override
   void initState() {
     _controller = AnimationController(

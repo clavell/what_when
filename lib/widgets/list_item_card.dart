@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ListItemCard extends StatelessWidget {
-  final String title;
-  final Widget leading;
-  final bool complete;
+  final String? title;
+  final Widget? leading;
+  final bool? complete;
 
   const ListItemCard({
     this.leading,
     this.title,
     this.complete,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -28,12 +28,12 @@ class ListItemCard extends StatelessWidget {
           child: ListTile(
             leading: leading ?? SizedBox(),
             // trailing: ,
-            title: complete
-                ? Text(title,
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+            title: complete!
+                ? Text(title!,
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         decoration: TextDecoration.lineThrough,
                         decorationThickness: 3))
-                : Text(title, style: Theme.of(context).textTheme.bodyText1),
+                : Text(title!, style: Theme.of(context).textTheme.bodyText1),
           ),
         ));
   }
