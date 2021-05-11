@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:what_when/model/task_list_model.dart';
 import 'package:what_when/screen/task_list_screen.dart';
+import 'package:what_when/screen/testScreen.dart';
 
 void main() {
+  // runApp(MyHomePage(title: 'nuts'));
   runApp(ChangeNotifierProvider(
     create: (context) => TaskListModel(),
     child: MyApp(),
