@@ -60,7 +60,7 @@ main() {
       ..title = 'wah a krof'
       ..parent = 0);
     await TaskDAO.instance.insert(task);
-    TaskModel retrieved = await TaskDAO.instance.getTaskById(1);
+    TaskModel? retrieved = await TaskDAO.instance.getTaskById(1);
     expect(task, retrieved);
   });
 }

@@ -12,7 +12,7 @@ main() {
   };
 
   test('creates a task from json', () {
-    TaskModel taskModel =
+    TaskModel? taskModel =
         standardSerializers.deserializeWith(TaskModel.serializer, taskData);
     expect(taskModel, isNotNull);
   });
@@ -21,7 +21,7 @@ main() {
     TaskListModel taskListModel = TaskListModel();
     taskListModel.addTask(taskData);
 
-    TaskModel taskModel =
+    TaskModel? taskModel =
         standardSerializers.deserializeWith(TaskModel.serializer, taskData);
 
     expect(taskListModel.getTaskList.last == taskModel, true);

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BouncingButton extends StatefulWidget {
   final onPressed;
-  final Icon icon;
+  final Icon? icon;
 
   BouncingButton({this.onPressed, this.icon});
 
@@ -12,28 +13,37 @@ class BouncingButton extends StatefulWidget {
 
 class _BouncingButtonState extends State<BouncingButton>
     with SingleTickerProviderStateMixin {
-  void _tapDown(TapDownDetails details) {
-    _controller.forward();
+  void _tapDown(TapDownDetails details) async {
+    await _controller.forward();
+    HapticFeedback.lightImpact();
   }
 
-  void _tapUp(TapUpDetails details) {
-    _controller.reverse();
+  void _tapUp(TapUpDetails details) async {
+    HapticFeedback.mediumImpact();
+    await _controller.reverse();
     widget.onPressed();
   }
 
-  double _scale;
-  AnimationController _controller;
+  void _tapCancel() {
+    _controller.reverse();
+  }
+
+  double _scale = 1.0;
+  late AnimationController _controller;
   @override
   void initState() {
     _controller = AnimationController(
       vsync: this,
       duration: Duration(
-        milliseconds: 500,
+        milliseconds: 100,
       ),
       lowerBound: 0.0,
-      upperBound: 0.1,
+      upperBound: 1.0,
     )..addListener(() {
-        setState(() {});
+        print(_controller.value);
+        setState(() {
+          _scale = 1 - _controller.value;
+        });
       });
     super.initState();
   }
@@ -46,12 +56,13 @@ class _BouncingButtonState extends State<BouncingButton>
 
   @override
   Widget build(BuildContext context) {
-    _scale = 1 - _controller.value;
     return GestureDetector(
       onTapDown: _tapDown,
       onTapUp: _tapUp,
-      child: Transform.scale(
-        scale: _scale,
+      onTapCancel: _tapCancel,
+      child: ScaleTransition(
+        scale: Tween(begin: 1.0, end: 0.8).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.elasticInOut)),
         child: widget.icon,
       ),
     );

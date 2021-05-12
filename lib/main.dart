@@ -5,6 +5,7 @@ import 'package:what_when/model/task_list_model.dart';
 import 'package:what_when/screen/task_list_screen.dart';
 
 void main() {
+  // runApp(MyHomePage(title: 'nuts'));
   runApp(ChangeNotifierProvider(
     create: (context) => TaskListModel(),
     child: MyApp(),
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'What When',
       theme: ThemeData.dark().copyWith(
         bottomSheetTheme: BottomSheetThemeData(
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme.copyWith(
                 bodyText1: Theme.of(context)
                     .textTheme
-                    .bodyText1
+                    .bodyText1!
                     .copyWith(color: Colors.white, fontSize: 16),
               ),
         ),
