@@ -8,19 +8,17 @@ part 'TaskModel.g.dart';
 abstract class TaskModel implements Built<TaskModel, TaskModelBuilder> {
   static Serializer<TaskModel> get serializer => _$taskModelSerializer;
 
-  int get id;
-  @nullable
-  int get parent;
+  int? get id;
+  int? get parent;
 
-  @nullable
-  BuiltList<int> get prereqs;
+  BuiltList<int>? get prereqs;
 
-  String get title;
+  String? get title;
 
-  bool get complete;
+  bool? get complete;
 
   TaskModel._();
-  factory TaskModel([void Function(TaskModelBuilder) updates]) = _$TaskModel;
+  factory TaskModel([void Function(TaskModelBuilder)? updates]) = _$TaskModel;
 }
 //
 // class TaskModel {
