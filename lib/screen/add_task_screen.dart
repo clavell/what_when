@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:what_when/model/task_list_model.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
-  final int parentid;
+  final int? parentid;
 
   const AddTaskBottomSheet({
     this.parentid,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -15,7 +15,7 @@ class AddTaskBottomSheet extends StatefulWidget {
 }
 
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
-  String text;
+  String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ElevatedButton(
               child: const Text('ADD'),
               onPressed: () {
-                int newID = Provider.of<TaskListModel>(context, listen: false)
+                int? newID = Provider.of<TaskListModel>(context, listen: false)
                         .getLastId +
                     1;
                 Provider.of<TaskListModel>(context, listen: false).addTask({

@@ -15,19 +15,16 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
   final String wireName = 'TaskModel';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, TaskModel object,
+  Iterable<Object?> serialize(Serializers serializers, TaskModel object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'id',
-      serializers.serialize(object.id, specifiedType: const FullType(int)),
-      'title',
-      serializers.serialize(object.title,
-          specifiedType: const FullType(String)),
-      'complete',
-      serializers.serialize(object.complete,
-          specifiedType: const FullType(bool)),
-    ];
-    Object value;
+    final result = <Object?>[];
+    Object? value;
+    value = object.id;
+    if (value != null) {
+      result
+        ..add('id')
+        ..add(serializers.serialize(value, specifiedType: const FullType(int)));
+    }
     value = object.parent;
     if (value != null) {
       result
@@ -42,11 +39,25 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
             specifiedType:
                 const FullType(BuiltList, const [const FullType(int)])));
     }
+    value = object.title;
+    if (value != null) {
+      result
+        ..add('title')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.complete;
+    if (value != null) {
+      result
+        ..add('complete')
+        ..add(
+            serializers.serialize(value, specifiedType: const FullType(bool)));
+    }
     return result;
   }
 
   @override
-  TaskModel deserialize(Serializers serializers, Iterable<Object> serialized,
+  TaskModel deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new TaskModelBuilder();
 
@@ -54,7 +65,7 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final Object value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
@@ -67,7 +78,7 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
         case 'prereqs':
           result.prereqs.replace(serializers.deserialize(value,
                   specifiedType:
-                      const FullType(BuiltList, const [const FullType(int)]))
+                      const FullType(BuiltList, const [const FullType(int)]))!
               as BuiltList<Object>);
           break;
         case 'title':
@@ -87,25 +98,21 @@ class _$TaskModelSerializer implements StructuredSerializer<TaskModel> {
 
 class _$TaskModel extends TaskModel {
   @override
-  final int id;
+  final int? id;
   @override
-  final int parent;
+  final int? parent;
   @override
-  final BuiltList<int> prereqs;
+  final BuiltList<int>? prereqs;
   @override
-  final String title;
+  final String? title;
   @override
-  final bool complete;
+  final bool? complete;
 
-  factory _$TaskModel([void Function(TaskModelBuilder) updates]) =>
+  factory _$TaskModel([void Function(TaskModelBuilder)? updates]) =>
       (new TaskModelBuilder()..update(updates)).build();
 
   _$TaskModel._({this.id, this.parent, this.prereqs, this.title, this.complete})
-      : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'TaskModel', 'id');
-    BuiltValueNullFieldError.checkNotNull(title, 'TaskModel', 'title');
-    BuiltValueNullFieldError.checkNotNull(complete, 'TaskModel', 'complete');
-  }
+      : super._();
 
   @override
   TaskModel rebuild(void Function(TaskModelBuilder) updates) =>
@@ -146,27 +153,27 @@ class _$TaskModel extends TaskModel {
 }
 
 class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
-  _$TaskModel _$v;
+  _$TaskModel? _$v;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
-  int _parent;
-  int get parent => _$this._parent;
-  set parent(int parent) => _$this._parent = parent;
+  int? _parent;
+  int? get parent => _$this._parent;
+  set parent(int? parent) => _$this._parent = parent;
 
-  ListBuilder<int> _prereqs;
+  ListBuilder<int>? _prereqs;
   ListBuilder<int> get prereqs => _$this._prereqs ??= new ListBuilder<int>();
-  set prereqs(ListBuilder<int> prereqs) => _$this._prereqs = prereqs;
+  set prereqs(ListBuilder<int>? prereqs) => _$this._prereqs = prereqs;
 
-  String _title;
-  String get title => _$this._title;
-  set title(String title) => _$this._title = title;
+  String? _title;
+  String? get title => _$this._title;
+  set title(String? title) => _$this._title = title;
 
-  bool _complete;
-  bool get complete => _$this._complete;
-  set complete(bool complete) => _$this._complete = complete;
+  bool? _complete;
+  bool? get complete => _$this._complete;
+  set complete(bool? complete) => _$this._complete = complete;
 
   TaskModelBuilder();
 
@@ -190,7 +197,7 @@ class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
   }
 
   @override
-  void update(void Function(TaskModelBuilder) updates) {
+  void update(void Function(TaskModelBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -200,15 +207,13 @@ class TaskModelBuilder implements Builder<TaskModel, TaskModelBuilder> {
     try {
       _$result = _$v ??
           new _$TaskModel._(
-              id: BuiltValueNullFieldError.checkNotNull(id, 'TaskModel', 'id'),
+              id: id,
               parent: parent,
               prereqs: _prereqs?.build(),
-              title: BuiltValueNullFieldError.checkNotNull(
-                  title, 'TaskModel', 'title'),
-              complete: BuiltValueNullFieldError.checkNotNull(
-                  complete, 'TaskModel', 'complete'));
+              title: title,
+              complete: complete);
     } catch (_) {
-      String _$failedField;
+      late String _$failedField;
       try {
         _$failedField = 'prereqs';
         _prereqs?.build();
